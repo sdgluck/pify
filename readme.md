@@ -27,15 +27,15 @@ $ npm install --save pify-proto
 
 ```js
 const pify = require('pify-proto');
-const IDBStore = require('idb-wrapper');
+const SomeConstructor = require('./some-constructor');
 
 // promisify prototype of an object
 
-const store = pify(new IDBStore({
+const inst = pify(new SomeConstructor({
 	/*options*/
 }))
 
-store.getAll().then(data => console.log(data))
+inst.method().then(result => console.log(result))
 ```
 
 ## API
