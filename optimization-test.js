@@ -26,11 +26,11 @@ function assertOptimized(fn, name) {
 	}
 }
 
-var sut = fn({
+var sut = fn(Object.create({
 	unicorn: function (cb) {
 		cb(null, 'unicorn');
 	}
-}, Promise);
+}), Promise);
 
 sut.unicorn().then(function () {
 	v8.optimizeFunctionOnNextCall(sut.unicorn);
