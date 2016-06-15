@@ -1,8 +1,7 @@
 'use strict';
 
-var processFn = function (fn, P, opts) {
+var processFn = function (fn, P, context) {
 	return function () {
-		var that = this;
 		var args = new Array(arguments.length);
 
 		for (var i = 0; i < arguments.length; i++) {
@@ -13,31 +12,30 @@ var processFn = function (fn, P, opts) {
 			args.push(function (err, result) {
 				if (err) {
 					reject(err);
-				} else if (opts.multiArgs) {
-					var results = new Array(arguments.length - 1);
-
-					for (var i = 1; i < arguments.length; i++) {
-						results[i - 1] = arguments[i];
-					}
-
-					resolve(results);
 				} else {
 					resolve(result);
 				}
 			});
 
-			fn.apply(that, args);
+			fn.apply(context, args);
 		});
-	};
+	}
 };
 
-var pify = module.exports = function (obj, P, opts) {
+module.exports = function (obj, P, opts) {
+	var proto = Object.getPrototypeOf(obj)
+
+	if (!proto) {
+		throw new Error('object has no prototype')
+	}
+
 	if (typeof P !== 'function') {
 		opts = P;
 		P = Promise;
 	}
 
 	opts = opts || {};
+
 	var exclude = opts.exclude || [/.+Sync$/];
 
 	var filter = function (key) {
@@ -48,21 +46,24 @@ var pify = module.exports = function (obj, P, opts) {
 		return opts.include ? opts.include.some(match) : !exclude.some(match);
 	};
 
-	var ret = typeof obj === 'function' ? function () {
-		if (opts.excludeMain) {
-			return obj.apply(this, arguments);
-		}
-
-		return processFn(obj, P, opts).apply(this, arguments);
-	} : {};
-
-	return Object.keys(obj).reduce(function (ret, key) {
+	var newProto = Object.keys(proto).reduce(function (newProto, key) {
 		var x = obj[key];
 
-		ret[key] = typeof x === 'function' && filter(key) ? processFn(x, P, opts) : x;
+		if (typeof x === 'function' && filter(key)) {
+			newProto[key] = processFn(x, P, obj)
+		} else if (typeof x === 'function') {
+			newProto[key] = x.bind(obj)
+		} else {
+			newProto[key] = x
+		}
 
-		return ret;
-	}, ret);
+		return newProto;
+	}, {});
+
+	var props = Object.keys(obj).reduce(function (props, key) {
+		props[key] = Object.getOwnPropertyDescriptor(obj, key)
+		return props
+	}, {})
+
+	return Object.create(newProto, props)
 };
-
-pify.all = pify;
