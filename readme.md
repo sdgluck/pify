@@ -4,8 +4,6 @@
 
 <a href="http://badge.fury.io/js/pify-proto"><img alt="npm version" src="https://badge.fury.io/js/pify-proto.svg"></a>
 
-Differences to `pify`:
-
 - Exclusively for promisfying enumerable methods on a prototype
 - Does not modify the original object prototype; returns a copy with a new prototype*
 - Only `include`/`exclude` options (I don't need the others; always open to PRs)
