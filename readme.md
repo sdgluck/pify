@@ -34,7 +34,7 @@ class SomeConstructor {
   }
   
   baz (cb) {
-    cb(null, 'whaddup')
+    cb(null, this.foo)
   }
 }
 
@@ -43,7 +43,7 @@ class SomeConstructor {
 const inst = pify(new SomeConstructor())
 
 inst.baz().then(console.log.bind(console))
-//=> 'whaddup'
+//=> 'foo'
 ```
 
 ## API
