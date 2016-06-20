@@ -27,15 +27,23 @@ $ npm install --save pify-proto
 
 ```js
 const pify = require('pify-proto');
-const SomeConstructor = require('./some-constructor');
+
+class SomeConstructor {
+  constructor () {
+    this.foo = 'bar'
+  }
+  
+  baz (cb) {
+    cb(null, 'whaddup')
+  }
+}
 
 // promisify prototype of an object
 
-const inst = pify(new SomeConstructor({
-	/*options*/
-}))
+const inst = pify(new SomeConstructor())
 
-inst.method().then(result => console.log(result))
+inst.baz().then(console.log.bind(console))
+//=> 'whaddup'
 ```
 
 ## API
