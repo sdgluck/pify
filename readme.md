@@ -85,6 +85,6 @@ Methods in a module **not** to promisify. Methods with names ending with `'Sync'
 
 `pify` was created by [Sindre Sorhus](http://sindresorhus.com).
 
-`pify-proto` was created by `pify` by [Sam Gluck](https://twitter.com/sdgluck).
+`pify-proto` was created by [Sam Gluck](https://twitter.com/sdgluck).
 
 `pify-proto` is released under the MIT license.
