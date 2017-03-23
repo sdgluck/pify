@@ -7,14 +7,17 @@ global.Promise = pinkiePromise;
 function Fixture() {}
 
 Fixture.prototype.spongebob = 'squarepants'
+Fixture.prototype.englebert = 'humperdink'
 Fixture.prototype.methodSync = () => 'unicorn'
 Fixture.prototype.method1 = cb => setImmediate(() => cb(null, 'unicorn'));
 Fixture.prototype.method2 = (x, cb) => setImmediate(() => cb(null, x));
 Fixture.prototype.method3 = cb => setImmediate(() => cb(null));
 Fixture.prototype.method4 = function (cb) { setImmediate(() => this.method1(cb)) }
 Fixture.prototype.method5 = function (cb) { cb(null, this.spongebob) }
+Fixture.prototype.method6 = function (cb) { cb(null, this.spongebob, this.englebert) }
 
 const pifyd = pify(new Fixture());
+const pifyd_MultiArgs = pify(new Fixture(), { multiArgs: true });
 
 test('fails with no prototype', async t => {
 	t.throws(() => pify(Object.create(null)))
@@ -31,6 +34,10 @@ test('pass argument', async t => {
 
 test('custom Promise module', async t => {
 	t.is(await pify(new Fixture(), pinkiePromise).method1(), 'unicorn');
+});
+
+test('multiArgs option', async t => {
+	t.deepEqual(await pifyd_MultiArgs.method6(), ['squarepants', 'humperdink']);
 });
 
 test('doesn\'t transform *Sync methods by default', t => {

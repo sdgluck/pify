@@ -81,10 +81,37 @@ Default: `[/.+Sync$/]`
 
 Methods in a module **not** to promisify. Methods with names ending with `'Sync'` are excluded by default.
 
+##### multiArgs
+
+Type: `boolean`<br>
+Default: `false`
+
+By default, the promisified methods will only return the second argument from the callback, which works fine for most APIs. This option can be useful for modules like `oauth` with prototype methods that return multiple arguments. Turning this on will make it return an array of all arguments from the callback, excluding the error argument, instead of just the second argument.
+
+```js
+const OAuth = require('oauth').OAuth;
+const pify = require('pify-proto');
+
+const oauth = pify(new OAuth(
+    'http://blah',
+    'http://blah',
+    'blah blah'
+), {multiArgs: true});
+
+oauth.getOAuthRequestToken()
+.then(result => {
+	const [ oauth_token, oauth_secret ] = result;
+});
+```
+
 ## Authors & License
 
 `pify` was created by [Sindre Sorhus](http://sindresorhus.com).
 
 `pify-proto` was created by [Sam Gluck](https://twitter.com/sdgluck).
+
+`pify-proto` contributors:
+
+* [Scott Donnelly (@sdd)](https://github.com/sdd)
 
 `pify-proto` is released under the MIT license.
