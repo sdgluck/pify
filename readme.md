@@ -6,7 +6,7 @@
 
 - Exclusively for promisfying enumerable methods on a prototype
 - Does not modify the original object prototype; returns a copy with a new prototype*
-- Only `include`/`exclude` options (I don't need the others; always open to PRs)
+- Only `include`/`exclude`/`multiArgs` options (I don't need the others; always open to PRs)
 
 _* In order that the lib can operate normally if it uses any method internally
 (because it will be passing callbacks as per original method signature)._
