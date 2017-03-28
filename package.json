@@ -1,6 +1,6 @@
 {
   "name": "pify-proto",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Promisify methods on the prototype of an object",
   "license": "MIT",
   "repository": {
