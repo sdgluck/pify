@@ -1,6 +1,6 @@
 'use strict';
 
-var processFn = function (fn, P, context) {
+var processFn = function (fn, P, context, opts) {
 	return function () {
 		var args = new Array(arguments.length);
 
@@ -13,7 +13,20 @@ var processFn = function (fn, P, context) {
 				if (err) {
 					reject(err);
 				} else {
-					resolve(result);
+
+					if (opts.multiArgs) {
+
+						var results = new Array(arguments.length - 1);
+
+						for (var i = 1; i < arguments.length; i++) {
+							results[i - 1] = arguments[i];
+						}
+
+						resolve(results);
+
+					} else {
+						resolve(result);
+					}
 				}
 			});
 
@@ -50,7 +63,7 @@ module.exports = function (obj, P, opts) {
 		var x = obj[key];
 
 		if (typeof x === 'function' && filter(key)) {
-			newProto[key] = processFn(x, P, obj)
+			newProto[key] = processFn(x, P, obj, opts)
 		} else if (typeof x === 'function') {
 			newProto[key] = x.bind(obj)
 		} else {
